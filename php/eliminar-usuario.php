@@ -55,8 +55,11 @@
         ]
     ];
 
-    $sql2 = "DELETE FROM usuarios WHERE usuario = '$user'";
+    $sql2 = "DELETE FROM puntuacion WHERE usuario = '$user'";
     $result2 = mysqli_query($conexion,$sql2);
+
+    $sql3 = "DELETE FROM usuarios WHERE usuario = '$user'";
+    $result3 = mysqli_query($conexion,$sql3);
 
    mysqli_close($conexion);
 ?>
