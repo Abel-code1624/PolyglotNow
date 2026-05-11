@@ -1,3 +1,12 @@
+<?php
+  session_start();
+
+  if(!isset($_SESSION['user'])) {
+      die("Error: User not autentified. <a href='../../../../index.html'>Come back to login</a>");
+  }
+
+  $user = $_SESSION['user'];
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -37,19 +46,45 @@
 <!-- La ventana emergente -->
 <div id="popup" class="overlay">
     <div class="popup-content">
-        <h2 style="text-align: center;">Exit the activity</h2>
-        <p style="text-align: center;">If you exit, you will have to start the activity when you enter again.<br><br> Do you want to exit?</p>
+        <h2 id="popup-title"></h2>
+        <p id="popup-text"></p>
         <div class="btns">
-            <div id="exitPopup" class="exit">Exit</div>
-            <div id="closePopup" class="cont">Continue</div>
+            <button id="popup-confirm" class="exit"></button>
+            <button id="popup-cancel" class="cont"></button>
         </div>
     </div>
-</div>  
+</div> 
 
 
 <script>
 localStorage.setItem("lang", "EN");
 localStorage.setItem("idioma", "ale");
+
+const lang = localStorage.getItem("lang") || "EN";
+
+const traducciones = {
+
+    ES: {
+
+        salirTitulo: "Salir de la actividad",
+        salirTexto: "Si sale tendrá que empezar de nuevo.<br><br>¿Quiere salir?",
+        salirBtn: "Salir",
+        continuarBtn: "Continuar"
+
+    },
+
+    EN: {
+
+        salirTitulo: "Leave activity",
+        salirTexto: "If you leave, you will have to start again.<br><br>Do you want to leave?",
+        salirBtn: "Leave",
+        continuarBtn: "Continue"
+
+    }
+
+};
+
+const t = traducciones[lang];
 
 let testFinalizado = false;
 
@@ -160,13 +195,58 @@ function mostrarPregunta() {
   preguntasRestantes.splice(indice,1);
 }
 
-document.getElementById("openPopup").addEventListener("click", function() {
+document.getElementById("openPopup").addEventListener("click", function(event) {
+
+    event.stopImmediatePropagation();
+
     if (testFinalizado) {
-        event.stopImmediatePropagation();
-        window.location.href = "../german-en.html";
-        return;
+
+        const user = '<?php echo $user; ?>';
+        const titulo = document.getElementById('titulo').textContent;
+        const percentText = document.getElementById('percentText').textContent.replace('%','');
+
+        const bodyData = new URLSearchParams();
+
+        bodyData.append('user', user);
+        bodyData.append('titulo', titulo);
+        bodyData.append('percentText', percentText);
+
+        fetch('../../../../php/enviar_resultados.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: bodyData.toString()
+        })
+
+        .then(response => response.text())
+
+        .then(data => {
+
+            console.log("Respuesta del servidor:", data);
+
+            if (data.trim() === "OK") {
+                window.location.href = "/polyglotnow/html/idiomas/en/german-en.php";
+            } else {
+                alert("Error en la inserción: " + data);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    } else {
+        showPopup({
+
+            title: t.salirTitulo,
+            text: t.salirTexto,
+            confirmText: t.salirBtn,
+            cancelText: t.continuarBtn,
+
+            onConfirm: () => {
+                window.location.href = "../german-en.php";
+            }
+        });
     }
-    document.getElementById("popup").style.display = 'block';
 });
 
 function verificarRespuesta(botonSeleccionado) {
@@ -195,15 +275,6 @@ function verificarRespuesta(botonSeleccionado) {
   // mostrar siguiente después de un tiempo
   setTimeout(mostrarPregunta, 1500);
 }
-
-/* function verificarRespuesta(respuestaUsuario) {
-  if (respuestaUsuario === preguntaActual.correcta) {
-    alert("¡Correcto!");
-  } else {
-    alert("Incorrecto. La respuesta correcta es: " + preguntaActual.correcta);
-  }
-  mostrarPregunta(); // Muestra la siguiente pregunta
-} */
 
 mostrarPregunta(); // Llama a la función para mostrar la primera pregunta
 </script>

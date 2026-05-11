@@ -15,10 +15,11 @@
         <h1 class="form-tit">CREAR UNA CUENTA</h1>
         <form action="../../php/introduccion-dat.php" method="post">
             <label for="usu">Ingresa un nombre de usuario *</label>
-            <input class="texto" type="text" name="user" placeholder="Usuario" required/>
+            <input class="texto" type="text" name="user" placeholder="Nombre de usuario" required/>
             <br>
-            <label for="con">Ingresa una contraseña *</label>
-            <input class="texto" type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" placeholder="Contraseña" required/>
+            <label for="con">Ingresa una contraseña *</label><br>
+            <label for="con2">(Mínimo un dígito, una letra mayúscula, una letra minúscula y 8 caracteres.)</label>
+            <input class="texto" type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" placeholder="Contraseña" required/> <!-- Contraseña que tiene que tener mínima 1 letra mayúscula, 1 letra minúscula y tiene que ser mínimo 8 caracteres -->
             <br>
             <label for="lan">Selecciona tu lengua nativa:</label>
             <select class="opt" id="lan" name="lan">
@@ -57,8 +58,9 @@
         </form>
     </div>
     <div>
-        <p>¿Tienes cuenta creada? <a href="../../index.html">Inicia sesión</a></p>
+        <p class="log_enl textot">¿Tienes cuenta creada? <a style="color: white;" href="../../index.html">Inicia sesión</a></p>
     </div>
     <script src="../../js/traduccion-registro.js"></script>
+    <script src="../../js/index.js"></script>
 </body>
 </html>

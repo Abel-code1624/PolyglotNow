@@ -8,21 +8,26 @@
     <link rel="icon" href="img/icon.png">
 </head>
 <body>
+    <a id="changeLan" onclick=cambioIdioma()>
+        <img class="ban2" src="img/banderas/uk.png" alt="Cambiar a Inglés / Change to Spanish">
+    </a>
     <div class="cab">
         <img class="logo" src="img/logo.png">
     </div>
-    <div class="pri">
+    <div class="pri apartados">
         <h1 class="form-tit">INICIAR SESIÓN</h1>
         <form action="php/verificacion-dat.php" method="post">
-            <input class="texto" type="text" name="user" placeholder="Usuario"/>
+            <input class="texto" type="text" name="user" placeholder="Nombre de usuario"/>
             <br>
             <input class="texto" type="password" name="password" placeholder="Contraseña"/>
+            <input type="hidden" name="idioma" id="idiomaInput" value="es">
             <br><br>
             <input class="envio" type="submit" value="Ingresar"/>
         </form>
     </div>
     <div>
-        <p>¿No tienes creada una cuenta? <a href="html/sesion/registro.html">Registrate</a></p>
+        <p class="textot">¿No tienes creada una cuenta? <a style="color: white;" href="html/sesion/registro.html">Registrate</a></p>
     </div>
 </body>
+<script src="js/index.js"></script>
 </html>

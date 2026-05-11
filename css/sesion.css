@@ -5,10 +5,9 @@ body {
     justify-content: center;
     align-items: center;
     padding: 50px;
-    /* background-image: url("../img/fondo2.jpg"); */
 }
 
-p {
+.textot {
     color: white;
 }
 
@@ -19,12 +18,45 @@ p {
     align-items: center;
 }
 
+.ban {
+    width: 60px;
+    height: 60px;
+    /* padding: 10px; */
+    object-fit: cover;
+    background: white;
+    cursor: pointer;
+
+}
+
+.ban2 {
+    width: 60px;
+    height: 60px;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+}
+
+/* .pra {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    width: 100px;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0;
+    margin: 20px auto;
+} */
+
 .pri {
-  background: #fff;
-  width: 420px;
-  border-radius: 10px;
-  padding: 32px;
-  box-shadow: 10px 10px 5px;
+    background: #fff;
+    width: 420px;
+    border-radius: 10px;
+    padding: 32px;
+    box-shadow: 10px 10px 5px;
+    /* align-items: stretch; */
 }
 
 .form-tit {
@@ -89,4 +121,18 @@ form {
 }
 .logo {
     width: 50%;
+}
+
+.enla {
+    display: flex;
+    flex-direction: row;
+    
+}
+
+#changeLan{
+    transition: transform .2s;
+}
+
+#changeLan:hover {
+    transform: scale(1.1);
 }

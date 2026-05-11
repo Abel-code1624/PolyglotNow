@@ -1,3 +1,12 @@
+<?php
+  session_start();
+
+  if(!isset($_SESSION['user'])) {
+      die("Error: Usuario no autenticado. <a href='../../../../../index.html'>Volver al inicio de sesión</a>");
+  }
+
+  $user = $_SESSION['user'];
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -9,6 +18,7 @@
     <link rel="stylesheet" href="../../../../css/menulec.css">
     <link rel="stylesheet" href="../../../../css/preguntas.css">
     <link rel="stylesheet" href="../../../emergente/emergente.css">
+    <link rel="stylesheet" href="../../../../css/circulo-punt.css">
     <script src="../../../emergente/emergente.js"></script>
   </head>
   <style>
@@ -25,6 +35,8 @@
 <body>
 
 <div id="pregunta-container" class="pri">
+  <form id="formulario">
+  <h1 id="titulo">Bonjour et Au revoir!</h1>
   <div id="pregunta"></div>
   <div id="respuestas">
     <div id="respuesta1" class="lec"></div>
@@ -32,29 +44,61 @@
     <div id="respuesta3" class="lec"></div>
     <div id="respuesta4" class="lec"></div>
   </div>
+  <!-- Círculo de puntuación -->
+  <div class="circle-container">
+    <svg width="200" height="200" viewBox="0 0 120 120">
+      <circle class="circle-background" cx="60" cy="60" r="50" />
+      <circle class="circle-progress" cx="60" cy="60" r="50" />
+    </svg>
+    <div class="circle-text" id="percentText">0%</div>
+  </div>
+  </form>
 </div>
 <div id="openPopup" class="next">X</div>
 <!-- La ventana emergente -->
 <div id="popup" class="overlay">
     <div class="popup-content">
-        <h2 style="text-align: center;">Salir de la actividad</h2>
-        <p style="text-align: center;">Si sale, tendrá que volver a empezar de nuevo la actividad cuando vuelva a entrar.<br><br> ¿Quiere salir?</p>
+        <h2 id="popup-title"></h2>
+        <p id="popup-text"></p>
         <div class="btns">
-            <div id="exitPopup" class="exit">Salir</div>
-            <div id="closePopup" class="cont">Continuar</div>
+            <button id="popup-confirm" class="exit"></button>
+            <button id="popup-cancel" class="cont"></button>
         </div>
     </div>
-</div>  
-
-
+</div> 
 <script>
 localStorage.setItem("lang", "ES");
 localStorage.setItem("idioma", "fra");
 
+const lang = localStorage.getItem("lang") || "ES";
+
+const traducciones = {
+
+    ES: {
+
+        salirTitulo: "Salir de la actividad",
+        salirTexto: "Si sale tendrá que empezar de nuevo.<br><br>¿Quiere salir?",
+        salirBtn: "Salir",
+        continuarBtn: "Continuar"
+
+    },
+
+    EN: {
+
+        salirTitulo: "Leave activity",
+        salirTexto: "If you leave, you will have to start again.<br><br>Do you want to leave?",
+        salirBtn: "Leave",
+        continuarBtn: "Continue"
+
+    }
+};
+
+const t = traducciones[lang];
+
 let testFinalizado = false;
 
 const preguntas = [
-{
+  {
     pregunta: "¿Cómo se dice 'Hola' en francés?",
     respuestas: ["Bonsoir", "Bonjour", "Merci", "S'il vous plaît"],
     correcta: "Bonjour"
@@ -140,8 +184,44 @@ let respuestasCorrectas = 0;
 function mostrarPregunta() {
   if (preguntasRestantes.length === 0) {
     testFinalizado = true;
+    var punt = Math.round(100*respuestasCorrectas/num_pre);
+
     document.getElementById("pregunta").textContent = "¡Has completado todas las preguntas!";
     document.getElementById("respuestas").innerHTML = `<p>Respuestas correctas: ${respuestasCorrectas} de ${num_pre}</p>`;
+    document.querySelector('.circle-container').style.display = 'flex';
+
+    const porcentaje = punt;
+    const circle = document.querySelector('.circle-progress');
+    const text = document.getElementById('percentText');
+    const circumference = 2 * Math.PI * 50;
+
+    let current = 0;
+
+    let strokeColor = "#4caf50";
+
+    if (punt < 30) {
+      strokeColor = "#f44336";
+    } else if (punt < 50) {
+      strokeColor = "#ff9800";
+    } else if (punt < 70) {
+      strokeColor = "#ffeb3b";
+    }
+    circle.style.stroke = strokeColor;
+
+    function animate() {
+      if (current <= punt) {
+        const offset = circumference - (current / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+        text.textContent = current + "%";
+        current++;
+        requestAnimationFrame(animate);
+      }
+    }
+
+    // Iniciar animación
+    animate();
+
+    return;
   }
   const indice = Math.floor(Math.random() * preguntasRestantes.length);
   preguntaActual = preguntasRestantes[indice];
@@ -160,13 +240,58 @@ function mostrarPregunta() {
   preguntasRestantes.splice(indice,1);
 }
 
-document.getElementById("openPopup").addEventListener("click", function() {
+document.getElementById("openPopup").addEventListener("click", function(event) {
+
+    event.stopImmediatePropagation();
+
     if (testFinalizado) {
-        event.stopImmediatePropagation();
-        window.location.href = "../french.html";
-        return;
+
+        const user = '<?php echo $user; ?>';
+        const titulo = document.getElementById('titulo').textContent;
+        const percentText = document.getElementById('percentText').textContent.replace('%','');
+
+        const bodyData = new URLSearchParams();
+
+        bodyData.append('user', user);
+        bodyData.append('titulo', titulo);
+        bodyData.append('percentText', percentText);
+
+        fetch('../../../../php/enviar_resultados.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: bodyData.toString()
+        })
+
+        .then(response => response.text())
+
+        .then(data => {
+
+            console.log("Respuesta del servidor:", data);
+
+            if (data.trim() === "OK") {
+                window.location.href = "/polyglotnow/html/idiomas/es/french.php";
+            } else {
+                alert("Error en la inserción: " + data);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    } else {
+        showPopup({
+
+            title: t.salirTitulo,
+            text: t.salirTexto,
+            confirmText: t.salirBtn,
+            cancelText: t.continuarBtn,
+
+            onConfirm: () => {
+                window.location.href = "../french.php";
+            }
+        });
     }
-    document.getElementById("popup").style.display = 'block';
 });
 
 function verificarRespuesta(botonSeleccionado) {
@@ -195,15 +320,6 @@ function verificarRespuesta(botonSeleccionado) {
   // mostrar siguiente después de un tiempo
   setTimeout(mostrarPregunta, 1500);
 }
-
-/* function verificarRespuesta(respuestaUsuario) {
-  if (respuestaUsuario === preguntaActual.correcta) {
-    alert("¡Correcto!");
-  } else {
-    alert("Incorrecto. La respuesta correcta es: " + preguntaActual.correcta);
-  }
-  mostrarPregunta(); // Muestra la siguiente pregunta
-} */
 
 mostrarPregunta(); // Llama a la función para mostrar la primera pregunta
 </script>

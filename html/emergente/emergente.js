@@ -1,65 +1,55 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const openPopupBtn = document.getElementById('openPopup');
-    const exitPopupBtn = document.getElementById('exitPopup');
-    const closePopupBtn = document.getElementById('closePopup');
-    const popup = document.getElementById('popup');
+document.addEventListener("DOMContentLoaded", () => {
 
-    const lang = localStorage.getItem("lang");
-    const idioma = localStorage.getItem("idioma");
+    const popup = document.getElementById("popup");
 
-    closePopupBtn.addEventListener('click', () => {
-        popup.style.display = 'none';
-    });
+    const popupTitle = document.getElementById("popup-title");
+    const popupText = document.getElementById("popup-text");
 
-    openPopupBtn.addEventListener('click', () => {
-        popup.style.display = 'block';
-    });
+    const confirmBtn = document.getElementById("popup-confirm");
+    const cancelBtn = document.getElementById("popup-cancel");
 
-    exitPopupBtn.addEventListener('click', () => {
-        if (lang === "ES") {
-            if (idioma === "ing") {
-                window.location.href = "../../es/english.html";
-            }
-            else if (idioma === "fra") {
-                window.location.href = "../../es/french.html";
-            }
-            else if (idioma === "ita") {
-                window.location.href = "../../es/italian.html";
-            }
-            else if (idioma === "ale") {
-                window.location.href = "../../es/german.html";
-            }
-            else if (idioma === "rum") {
-                window.location.href = "../../es/romanian.html";
-            } else {
-                window.location.href = "../../../../php/cursos.php";
-            }
-        }
-        else if (lang === "EN") {
-            if (idioma === "esp") {
-                window.location.href = "../../en/spanish.html";
-            }
-            else if (idioma === "fra") {
-                window.location.href = "../../en/french-en.html";
-            }
-            else if (idioma === "ita") {
-                window.location.href = "../../en/italian-en.html";
-            }
-            else if (idioma === "ale") {
-                window.location.href = "../../en/german-en.html";
-            }
-            else if (idioma === "rum") {
-                window.location.href = "../../en/romanian-en.html";
-            } else {
-                window.location.href = "../../../../php/cursos.php";
-            }
+    let confirmAction = null;
+
+    window.showPopup = ({
+        title = "",
+        text = "",
+        confirmText = "OK",
+        cancelText = "Cancel",
+        onConfirm = null,
+        hideCancel = false
+    }) => {
+
+        popupTitle.innerHTML = title;
+        popupText.innerHTML = text;
+
+        confirmBtn.textContent = confirmText;
+        cancelBtn.textContent = cancelText;
+
+        confirmAction = onConfirm;
+
+        cancelBtn.style.display = hideCancel ? "none" : "inline-block";
+
+        popup.style.display = "flex";
+    };
+
+    confirmBtn.addEventListener("click", () => {
+
+        popup.style.display = "none";
+
+        if (confirmAction) {
+            confirmAction();
         }
 
     });
 
-    window.addEventListener('click', (e) => {
+    cancelBtn.addEventListener("click", () => {
+        popup.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
         if (e.target === popup) {
-            popup.style.display = 'none';
+            popup.style.display = "none";
         }
     });
+
 });

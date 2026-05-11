@@ -3,8 +3,9 @@ document.addEventListener("DOMContentLoaded", function() {
         'espanol': {
             'form-tit': 'CREAR UNA CUENTA',
             'usu': 'Ingresa un nombre de usuario *',
-            'user-placeholder': 'Usuario',
+            'user-placeholder': 'Nombre de usuario',
             'con': 'Ingresa una contraseña *',
+            'con2': '(Mínimo un dígito, una letra mayúscula, una letra minúscula y 8 caracteres.)',
             'password-placeholder': 'Contraseña',
             'lan': 'Selecciona tu lengua nativa:',
             'cur': 'Selecciona los idiomas que quieres aprender:',
@@ -14,13 +15,15 @@ document.addEventListener("DOMContentLoaded", function() {
             'c_fra': 'Francés',
             'c_ita': 'Italiano',
             'c_ale': 'Alemán',
-            'c_rum': 'Rumano'
+            'c_rum': 'Rumano',
+            'log_enl': '¿Tienes cuenta creada? <a style="color: white;" href="../../index.html">Inicia sesión</a>'
         },
         'english': {
             'form-tit': 'CREATE AN ACCOUNT',
             'usu': 'Enter a username *',
             'user-placeholder': 'Username',
             'con': 'Enter a password *',
+            'con2': '(Minimum one digit, one uppercase letter, one lowercase letter and 8 characters.)',
             'password-placeholder': 'Password',
             'lan': 'Select your native language:',
             'cur': 'Select languages you want to learn:',
@@ -30,7 +33,8 @@ document.addEventListener("DOMContentLoaded", function() {
             'c_fra': 'French',
             'c_ita': 'Italian',
             'c_ale': 'German',
-            'c_rum': 'Romanian'
+            'c_rum': 'Romanian',
+            'log_enl': 'Do you have a created account? <a style="color: white;" href="../../index.html">Log in</a>'
         }
     };
 
@@ -43,10 +47,12 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector('label[for="usu"]').textContent = translations[lang]['usu'];
         document.querySelector('input[name="user"]').placeholder = translations[lang]['user-placeholder'];
         document.querySelector('label[for="con"]').textContent = translations[lang]['con'];
+        document.querySelector('label[for="con2"]').textContent = translations[lang]['con2'];
         document.querySelector('input[name="password"]').placeholder = translations[lang]['password-placeholder'];
         document.querySelector('label[for="lan"]').textContent = translations[lang]['lan'];
         document.querySelector('label[for="cur"]').textContent = translations[lang]['cur'];
         document.querySelector('.envio').value = translations[lang]['submit'];
+        document.querySelector('.log_enl').innerHTML = translations[lang]['log_enl'];
 
         // Actualizar labels de los checkboxes
         document.querySelector('label[for="c_ing"]').textContent = translations[lang]['c_ing'];
@@ -78,10 +84,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }
 
+    const langInStorage = localStorage.getItem("languageActive") || "espanol";
+    langSelect.value = langInStorage;
     // Cambia idioma al cargar la página
     updateLanguage();
 
     // Cambia idioma cuando el usuario selecciona otro en el select
-    langSelect.addEventListener('change', updateLanguage);
+    langSelect.addEventListener('change', function() {
+        localStorage.setItem("languageActive", langSelect.value);
+        updateLanguage();
+    });
 });
 

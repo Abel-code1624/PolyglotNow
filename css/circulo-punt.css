@@ -1,0 +1,46 @@
+/*body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}*/
+
+.circle-container {
+    display: none;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+svg {
+    transform: rotate(-90deg);
+}
+
+.circle-background {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 20;
+}
+
+.circle-progress {
+    fill: none;
+    stroke-width: 20;
+    stroke-linecap: round;
+    stroke-dasharray: 314.16;
+    stroke-dashoffset: 314.16;
+    transition: stroke-dashoffset 1s ease;
+}
+
+.circle-text {
+    position: absolute;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}

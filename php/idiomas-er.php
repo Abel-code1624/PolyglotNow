@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idioma'])) {
     <link rel="icon" href="../img/icon.png">
     <style>
         .lang-form {
-            display: inline-block;
+            /* display: inline-block; */
             margin: 10px;
         }
         .lang-button {

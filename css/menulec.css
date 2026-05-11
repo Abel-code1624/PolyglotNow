@@ -69,6 +69,14 @@ body {
     background-color: #efefef;
 }
 
+.lec.disabled:hover {
+    background-color: inherit !important;
+    cursor: default;
+    transform: none !important;
+    color: black;
+}
+
+
 .content {
     text-align: justify;
 }
